@@ -6,6 +6,7 @@ function getName() {
     console.log('Hello Name');
     const user = {
         name: 'Hasan',
+        age: 26,
     };
     console.log(user.name);
 }
