@@ -1,34 +1,41 @@
 {
-  "name": "nodejs-ts-api-template",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
-  "scripts": {
-    "dev": "node src/index",
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "format:check": "prettier . --check",
-    "format:fix": "prettier . --write",
-    "lint:check": "eslint . ",
-    "lint:fix": "eslint . --fix",
-    "prepare": "husky"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/dev-hans-programmer/microservice-ts-template.git"
-  },
-  "author": "Hasan Ali",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/dev-hans-programmer/microservice-ts-template/issues"
-  },
-  "homepage": "https://github.com/dev-hans-programmer/microservice-ts-template#readme",
-  "devDependencies": {
-    "@eslint/js": "^9.34.0",
-    "@types/node": "^24.3.0",
-    "eslint": "^9.34.0",
-    "husky": "^9.1.7",
-    "prettier": "3.6.2",
-    "typescript": "^5.9.2",
-    "typescript-eslint": "^8.42.0"
-  }
+    "name": "nodejs-ts-api-template",
+    "version": "1.0.0",
+    "description": "",
+    "main": "index.js",
+    "scripts": {
+        "dev": "node src/index",
+        "test": "echo \"Error: no test specified\" && exit 1",
+        "format:check": "prettier . --check",
+        "format:fix": "prettier . --write",
+        "lint:check": "eslint . ",
+        "lint:fix": "eslint . --fix",
+        "prepare": "husky"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/dev-hans-programmer/microservice-ts-template.git"
+    },
+    "author": "Hasan Ali",
+    "license": "ISC",
+    "bugs": {
+        "url": "https://github.com/dev-hans-programmer/microservice-ts-template/issues"
+    },
+    "homepage": "https://github.com/dev-hans-programmer/microservice-ts-template#readme",
+    "devDependencies": {
+        "@eslint/js": "^9.34.0",
+        "@types/node": "^24.3.0",
+        "eslint": "^9.34.0",
+        "husky": "^9.1.7",
+        "lint-staged": "^16.1.6",
+        "prettier": "3.6.2",
+        "typescript": "^5.9.2",
+        "typescript-eslint": "^8.42.0"
+    },
+    "lint-staged": {
+        "*.ts": [
+            "npm run format:check",
+            "npm run lint:check"
+        ]
+    }
 }
