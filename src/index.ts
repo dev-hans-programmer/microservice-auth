@@ -1,7 +1,9 @@
+import Config from './config';
+
 /* eslint-disable no-console */
 console.log(`Hello from node ${process.version}`);
 console.log('Hello');
-
+console.log(Config.PORT);
 function getName() {
   console.log('Hello Name');
   const user = {

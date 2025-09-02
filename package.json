@@ -2,7 +2,7 @@
   "name": "nodejs-ts-api-template",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "dist/index.js",
   "scripts": {
     "dev": "node src/index",
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -24,6 +24,7 @@
   "homepage": "https://github.com/dev-hans-programmer/microservice-ts-template#readme",
   "devDependencies": {
     "@eslint/js": "^9.34.0",
+    "@types/dotenv": "^6.1.1",
     "@types/node": "^24.3.0",
     "eslint": "^9.34.0",
     "husky": "^9.1.7",
@@ -37,5 +38,8 @@
       "npm run format:fix",
       "npm run lint:fix"
     ]
+  },
+  "dependencies": {
+    "dotenv": "^17.2.1"
   }
 }
