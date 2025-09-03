@@ -1,16 +1,15 @@
 import app from './app';
 import Config from './config';
+import logger from './config/logger';
 
 const startServer = () => {
   try {
     app.listen(parseInt(Config.PORT || '0'), () =>
-      console.log(`Server running on ${Config.PORT}`),
+      logger.info(`Server running on ${Config.PORT}`),
     );
   } catch (err) {
-    console.error('Failed to start server:', err);
+    logger.error('Failed to start server:', err);
     process.exit(1);
   }
 };
-
-// Call it here 👇
 startServer();
