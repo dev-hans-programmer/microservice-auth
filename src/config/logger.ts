@@ -4,7 +4,7 @@ import Config from '.';
 const logger = winston.createLogger({
   level: 'info',
   defaultMeta: {
-    service: 'node-js-template',
+    service: 'microservice-auth',
   },
   transports: [
     new winston.transports.File({

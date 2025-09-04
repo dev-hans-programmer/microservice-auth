@@ -5,7 +5,7 @@ import logger from './config/logger';
 const startServer = () => {
   try {
     app.listen(parseInt(Config.PORT || '0'), () =>
-      logger.info(`Server running on ${Config.PORT}`),
+      logger.info(`Microservice auth server running on ${Config.PORT}`),
     );
   } catch (err) {
     logger.error('Failed to start server:', err);
