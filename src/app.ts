@@ -2,6 +2,7 @@ import express, { NextFunction, Request, Response } from 'express';
 import createHttpError, { HttpError } from 'http-errors';
 import logger from './config/logger';
 import { StatusCodes } from 'http-status-codes';
+import { authRouter } from './routes/auth';
 
 const app = express();
 
@@ -15,6 +16,8 @@ app.get('/error-route', () => {
     'You cannot access this route',
   );
 });
+
+app.use('/auth', authRouter);
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 app.use((err: HttpError, req: Request, res: Response, _next: NextFunction) => {
