@@ -1,6 +1,6 @@
-import 'reflect-metadata';
 import { DataSource } from 'typeorm';
-import Config from './config';
+import Config from '.';
+import { User } from '../entity/User';
 
 export const AppDataSource = new DataSource({
   type: 'postgres',
@@ -11,7 +11,7 @@ export const AppDataSource = new DataSource({
   database: Config.PG_DB,
   synchronize: Config.NODE_ENV !== 'prod',
   logging: false,
-  entities: [],
+  entities: [User],
   migrations: [],
   subscribers: [],
 });
