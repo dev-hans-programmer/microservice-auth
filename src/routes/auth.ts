@@ -2,15 +2,17 @@ import express from 'express';
 import { AuthController } from '../controllers/auth-controller';
 import { validateRequest } from '../middleware/validate-input';
 import { registerUserSchema } from '../schema/user';
+import { AppDataSource } from '../config/data-source';
+import { User } from '../entity/User';
+import { UserService } from '../services/user-service';
 
 const router = express.Router();
 
-const authController = new AuthController();
+const userRepo = AppDataSource.getRepository(User);
+const userService = new UserService(userRepo);
 
-router.post(
-  '/register',
-  validateRequest(registerUserSchema),
-  authController.register,
-);
+const authController = new AuthController(userService);
+
+router.post('/', validateRequest(registerUserSchema), authController.register);
 
 export { router as authRouter };

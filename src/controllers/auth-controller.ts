@@ -1,7 +1,13 @@
 import { Request, Response } from 'express';
+import { RegisterUserInput } from '../schema/user';
+import { UserService } from '../services/user-service';
 
 export class AuthController {
-  register = (req: Request, res: Response) => {
+  constructor(private readonly userService: UserService) {}
+
+  register = async (req: Request, res: Response) => {
+    await this.userService.create(req.body as RegisterUserInput);
+
     res.status(201).json({ message: 'User created' });
   };
 }

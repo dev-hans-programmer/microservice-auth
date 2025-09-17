@@ -30,7 +30,7 @@ describe('POST /auth/register', () => {
         password: 'secret',
       };
 
-      const response = await request(app).post('/auth/register').send(userData);
+      const response = await request(app).post('/auth').send(userData);
       expect(response.statusCode).toBe(201);
     });
 
@@ -43,7 +43,7 @@ describe('POST /auth/register', () => {
         password: 'secret',
       };
 
-      const response = await request(app).post('/auth/register').send(userData);
+      const response = await request(app).post('/auth').send(userData);
       expect(response.headers['content-type']).toEqual(
         expect.stringContaining('json'),
       );
@@ -52,12 +52,13 @@ describe('POST /auth/register', () => {
   it('should persist the user in the database', async () => {
     const userData = getUserData();
 
-    await request(app).post('/auth/register').send(userData);
+    await request(app).post('/auth').send(userData);
 
     // check the data in db
     const userRepository = connection.getRepository(User);
     const users = await userRepository.find();
 
     expect(users.length).toBe(1);
+    expect(users[0]?.email).toBe(userData.email);
   });
 });
