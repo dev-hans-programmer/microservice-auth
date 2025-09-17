@@ -2,7 +2,7 @@ import request from 'supertest';
 import app from '../../../app';
 import { DataSource } from 'typeorm';
 import { AppDataSource } from '../../../config/data-source';
-import { getUserData, truncateTables } from '../../utils';
+import { createUserForTest, getUserData, truncateTables } from '../../utils';
 import { User } from '../../../entity/User';
 
 describe('POST /auth/register', () => {
@@ -60,5 +60,16 @@ describe('POST /auth/register', () => {
 
     expect(users.length).toBe(1);
     expect(users[0]?.email).toBe(userData.email);
+  });
+  it('Should return id of the created user', async () => {
+    const userData = getUserData();
+    const createdUser = await createUserForTest();
+
+    const userRepository = connection.getRepository(User);
+    const users = await userRepository.find();
+
+    expect(users.length).toBe(1);
+    expect(users[0]?.email).toBe(userData.email);
+    expect(createdUser.body).toHaveProperty('id');
   });
 });

@@ -1,4 +1,6 @@
+import request from 'supertest';
 import { DataSource } from 'typeorm';
+import app from '../../app';
 
 export const truncateTables = async (connection: DataSource) => {
   const entities = connection.entityMetadatas;
@@ -14,10 +16,12 @@ export const truncateTables = async (connection: DataSource) => {
   //   );
 };
 
-export const createUser = () => {};
 export const getUserData = () => ({
   firstName: 'Hasan',
   lastName: 'Ali',
   email: 'hasan@gmail.com',
   password: 'secret',
 });
+
+export const createUserForTest = async (userData = getUserData()) =>
+  await request(app).post('/auth').send(userData);

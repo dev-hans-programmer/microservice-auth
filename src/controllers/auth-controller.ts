@@ -6,8 +6,8 @@ export class AuthController {
   constructor(private readonly userService: UserService) {}
 
   register = async (req: Request, res: Response) => {
-    await this.userService.create(req.body as RegisterUserInput);
+    const user = await this.userService.create(req.body as RegisterUserInput);
 
-    res.status(201).json({ message: 'User created' });
+    res.status(201).json({ message: 'User created', id: user.id });
   };
 }
