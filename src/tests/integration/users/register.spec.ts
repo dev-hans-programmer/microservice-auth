@@ -1,10 +1,10 @@
 import request from 'supertest';
-import app from '../../../app';
 import { DataSource } from 'typeorm';
 import { AppDataSource } from '../../../config/data-source';
 import { createUserForTest, getUserData, isJWT } from '../../utils';
 import { User } from '../../../entity/User';
 import { Roles } from '../../../utils/constants';
+import app from '../../../app';
 
 describe('POST /auth/register', () => {
   let connection: DataSource;

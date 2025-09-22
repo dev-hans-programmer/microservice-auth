@@ -1,6 +1,6 @@
 import { config } from 'dotenv';
 import path from 'path';
-import { z } from 'zod';
+import { string, z } from 'zod';
 
 const env = process.env.NODE_ENV;
 
@@ -19,6 +19,13 @@ const envSchema = z.object({
   PG_USER: z.string(),
   PG_PASSWORD: z.string(),
   PG_DB: z.string(),
+
+  REFRESH_TOKEN_SECRET: string().default('myrefreshtokensecretkey'),
+
+  USE_SECRET_MANAGER: z
+    .enum(['true', 'false'])
+    .transform((val) => val === 'true')
+    .default(false),
 });
 
 const Config = envSchema.parse(process.env);

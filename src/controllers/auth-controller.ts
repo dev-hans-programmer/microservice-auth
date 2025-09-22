@@ -1,10 +1,7 @@
 import { Request, Response } from 'express';
-import { StatusCodes } from 'http-status-codes';
 import { Logger } from 'winston';
-
 import fs from 'fs/promises';
 import path from 'path';
-import createHttpError from 'http-errors';
 
 import jwt, { JwtPayload } from 'jsonwebtoken';
 
@@ -12,6 +9,9 @@ import { RegisterUserInput } from '../schema/user';
 import { UserService } from '../services/user-service';
 import { Roles } from '../utils/constants';
 import { hashPassword } from '../utils/security';
+import Config from '../config';
+import createHttpError from 'http-errors';
+import { StatusCodes } from 'http-status-codes';
 
 export class AuthController {
   constructor(
@@ -25,6 +25,9 @@ export class AuthController {
     this.logger.info('Request comes for registering user');
     const { firstName, lastName, email, password } =
       req.body as RegisterUserInput;
+
+    // const privateKey = (req.app.locals.keys as { privateKey: Buffer })
+    //   .privateKey;
 
     let privateKey: Buffer | undefined;
     try {
@@ -52,7 +55,11 @@ export class AuthController {
       expiresIn: '1h',
       issuer: 'auth-service',
     });
-    const refreshToken = jwt.sign(payload, 'secret');
+    const refreshToken = jwt.sign(payload, Config.REFRESH_TOKEN_SECRET, {
+      algorithm: 'HS256',
+      expiresIn: '1y',
+      issuer: 'auth-service',
+    });
 
     res.cookie('accessToken', accessToken, {
       domain: 'localhost',

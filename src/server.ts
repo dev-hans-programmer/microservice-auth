@@ -2,9 +2,15 @@ import app from './app';
 import Config from './config';
 import { AppDataSource } from './config/data-source';
 import logger from './config/logger';
+import loadSecrets from './config/secrets';
 
 const startServer = async () => {
   try {
+    const { privateKey } = await loadSecrets();
+    app.locals.keys = {
+      privateKey,
+    };
+
     const connection = await AppDataSource.initialize();
     logger.info(`Database initialised: ${connection.isInitialized}`);
     // check the data in db
