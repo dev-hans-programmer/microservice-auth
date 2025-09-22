@@ -14,10 +14,15 @@ export const registerUserSchema = z.object({
     })
     .min(3, 'Last name should be minimum of 3 characters'),
 
-  email: z.email({
-    error: (issue) =>
-      issue.input === undefined ? 'Email is required' : 'Not an email',
-  }),
+  email: z.preprocess(
+    (val) => (typeof val === 'string' ? val.trim() : val),
+    z
+      .email({
+        error: (issue) =>
+          issue.input === undefined ? 'Email is required' : 'Not an email',
+      })
+      .toLowerCase(),
+  ),
   password: z
     .string({
       error: (issue) =>
