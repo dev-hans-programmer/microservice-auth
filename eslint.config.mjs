@@ -6,7 +6,13 @@ export default defineConfig(
   eslint.configs.recommended,
   tseslint.configs.recommendedTypeChecked,
   {
-    ignores: ['eslint.config.mjs', 'node_modules', 'dist', 'jest.config.js'],
+    ignores: [
+      'eslint.config.mjs',
+      'node_modules',
+      'dist',
+      'jest.config.js',
+      'scripts/generateKeys.js',
+    ],
   },
   {
     languageOptions: {

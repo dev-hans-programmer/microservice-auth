@@ -2,7 +2,7 @@ import request from 'supertest';
 import app from '../../../app';
 import { DataSource } from 'typeorm';
 import { AppDataSource } from '../../../config/data-source';
-import { createUserForTest, getUserData } from '../../utils';
+import { createUserForTest, getUserData, isJWT } from '../../utils';
 import { User } from '../../../entity/User';
 import { Roles } from '../../../utils/constants';
 
@@ -109,6 +109,31 @@ describe('POST /auth/register', () => {
       const response = await createUserForTest(userData);
 
       expect(response.statusCode).toBe(400);
+    });
+    it('Should return access token and refresh token in cookie', async () => {
+      const userData = getUserData();
+
+      let accessToken = null;
+      let refreshToken = null;
+
+      const response = await createUserForTest(userData);
+
+      const cookies =
+        (response.headers['set-cookie'] as unknown as string[]) || [];
+
+      cookies.forEach((cookie) => {
+        if (cookie.startsWith('accessToken=')) {
+          accessToken = cookie.split(';')[0]?.split('=')[1] || '';
+        }
+        if (cookie.startsWith('refreshToken=')) {
+          refreshToken = cookie.split(';')[0]?.split('=')[1] || '';
+        }
+      });
+      expect(accessToken).not.toBeNull();
+      expect(refreshToken).not.toBeNull();
+
+      expect(isJWT(accessToken)).toBeTruthy();
+      expect(isJWT(refreshToken)).toBeTruthy();
     });
   });
   describe('Fields are missing', () => {

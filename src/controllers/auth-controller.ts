@@ -1,7 +1,15 @@
 import { Request, Response } from 'express';
+import { StatusCodes } from 'http-status-codes';
+import { Logger } from 'winston';
+
+import fs from 'fs/promises';
+import path from 'path';
+import createHttpError from 'http-errors';
+
+import jwt, { JwtPayload } from 'jsonwebtoken';
+
 import { RegisterUserInput } from '../schema/user';
 import { UserService } from '../services/user-service';
-import { Logger } from 'winston';
 import { Roles } from '../utils/constants';
 import { hashPassword } from '../utils/security';
 
@@ -18,12 +26,46 @@ export class AuthController {
     const { firstName, lastName, email, password } =
       req.body as RegisterUserInput;
 
+    let privateKey: Buffer | undefined;
+    try {
+      privateKey = await fs.readFile(path.resolve('certs/private.pem'));
+    } catch (err: unknown) {
+      const error = err as Error;
+
+      throw createHttpError(StatusCodes.INTERNAL_SERVER_ERROR, error.message);
+    }
+
     const user = await this.userService.create({
       firstName,
       lastName,
       email,
       password: await hashPassword(password),
       role: Roles.CUSTOMER,
+    });
+
+    const payload: JwtPayload = {
+      sub: String(user.id),
+      role: user.role,
+    };
+    const accessToken = jwt.sign(payload, privateKey, {
+      algorithm: 'RS256',
+      expiresIn: '1h',
+      issuer: 'auth-service',
+    });
+    const refreshToken = jwt.sign(payload, 'secret');
+
+    res.cookie('accessToken', accessToken, {
+      domain: 'localhost',
+      sameSite: 'strict',
+      maxAge: 1000 * 60 * 60, // 1 hour,
+      httpOnly: true,
+    });
+
+    res.cookie('refreshToken', refreshToken, {
+      domain: 'localhost',
+      sameSite: 'strict',
+      maxAge: 1000 * 60 * 60 * 26 * 365, // 365 days,
+      httpOnly: true,
     });
 
     res.status(201).json({ message: 'User created', id: user.id });
