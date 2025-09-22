@@ -11,14 +11,9 @@ export const validateRequest =
       next();
     } catch (err) {
       if (err instanceof z.ZodError) {
-        const errors = err.issues.map((issue) => ({
-          type: err.name,
-          path: issue.path[0],
-          location: '',
-          msg: issue.message,
-        }));
+        const error = err.issues.map((issue) => issue.message).join('|');
 
-        throw createHttpError(StatusCodes.BAD_REQUEST, '', { errors });
+        throw createHttpError(StatusCodes.BAD_REQUEST, error);
       }
     }
   };

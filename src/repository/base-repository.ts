@@ -21,6 +21,12 @@ export class BaseRepository<TEntity extends BaseEntityWithId> {
     await this.repository.findOne({
       where: { id } as FindOptionsWhere<TEntity>,
     });
+  public findOne = async (
+    where: FindOptionsWhere<TEntity>,
+  ): Promise<TEntity | null> =>
+    await this.repository.findOne({
+      where,
+    });
 
   public findAll = async (): Promise<TEntity[]> => await this.repository.find();
 

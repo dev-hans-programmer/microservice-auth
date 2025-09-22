@@ -2,8 +2,9 @@ import request from 'supertest';
 import app from '../../../app';
 import { DataSource } from 'typeorm';
 import { AppDataSource } from '../../../config/data-source';
-import { createUserForTest, getUserData, truncateTables } from '../../utils';
+import { createUserForTest, getUserData } from '../../utils';
 import { User } from '../../../entity/User';
+import { Roles } from '../../../utils/constants';
 
 describe('POST /auth/register', () => {
   let connection: DataSource;
@@ -14,7 +15,9 @@ describe('POST /auth/register', () => {
 
   beforeEach(async () => {
     // truncate all the tables
-    await truncateTables(connection);
+    await connection.dropDatabase();
+    await connection.synchronize();
+    // await truncateTables(connection);
   });
 
   afterAll(async () => {
@@ -71,5 +74,40 @@ describe('POST /auth/register', () => {
     expect(users.length).toBe(1);
     expect(users[0]?.email).toBe(userData.email);
     expect(createdUser.body).toHaveProperty('id');
+  });
+  it('Should have customer role', async () => {
+    // const userData = getUserData();
+    await createUserForTest();
+
+    const userRepository = connection.getRepository(User);
+    const users = await userRepository.find();
+
+    expect(users[0]).toHaveProperty('role');
+    expect(users[0]?.role).toBe(Roles.CUSTOMER);
+  });
+  it('It should store the hashed password', async () => {
+    const userData = getUserData();
+    await createUserForTest(userData);
+
+    const userRepository = connection.getRepository(User);
+    const users = await userRepository.find();
+
+    expect(users[0]?.password).not.toBe(userData.password);
+    expect(users[0]?.password).toHaveLength(60);
+    expect(users[0]?.password).toMatch(/^\$2b\$\d+\$/);
+    // expect(users[0]?.password).toBe(await hashPassword(userData.password));
+  });
+  it('It should return 400 if email already exists', async () => {
+    const userData = getUserData();
+
+    const userRepository = connection.getRepository(User);
+    await userRepository.save({
+      ...userData,
+      role: Roles.CUSTOMER,
+    });
+
+    const response = await createUserForTest(userData);
+
+    expect(response.statusCode).toBe(400);
   });
 });

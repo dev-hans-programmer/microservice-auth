@@ -27,6 +27,7 @@
   "homepage": "https://github.com/dev-hans-programmer/microservice-ts-template#readme",
   "devDependencies": {
     "@eslint/js": "^9.34.0",
+    "@types/bcrypt": "^6.0.0",
     "@types/dotenv": "^6.1.1",
     "@types/express": "^5.0.3",
     "@types/jest": "^30.0.0",
@@ -50,6 +51,7 @@
     ]
   },
   "dependencies": {
+    "bcrypt": "^6.0.0",
     "cross-env": "^10.0.0",
     "dotenv": "^17.2.1",
     "express": "^5.1.0",

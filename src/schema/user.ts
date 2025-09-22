@@ -16,7 +16,7 @@ export const registerUserSchema = z.object({
 
   email: z.email({
     error: (issue) =>
-      issue.input === undefined ? 'The field is required' : 'Not an email',
+      issue.input === undefined ? 'Email is required' : 'Not an email',
   }),
   password: z
     .string({
