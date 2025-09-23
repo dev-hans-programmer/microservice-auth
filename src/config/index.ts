@@ -21,6 +21,10 @@ const envSchema = z.object({
   PG_DB: z.string(),
 
   REFRESH_TOKEN_SECRET: string().default('myrefreshtokensecretkey'),
+  ACCESS_TOKEN_ALGO: z.string().default('RS256'),
+  ACCESS_TOKEN_EXPIRY: z.string().default('1h'),
+  ACCESS_TOKEN_COOKIE_EXP_IN_MS: z.number().default(1000 * 60 * 60),
+  REFRESH_TOKEN_COOKIE_EXP_IN_MS: z.number().default(1000 * 60 * 60 * 24 * 365),
 
   USE_SECRET_MANAGER: z
     .enum(['true', 'false'])

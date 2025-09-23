@@ -1,23 +1,20 @@
 import { Request, Response } from 'express';
 import { Logger } from 'winston';
-import fs from 'fs/promises';
-import path from 'path';
 
-import jwt, { JwtPayload } from 'jsonwebtoken';
+import { JwtPayload } from 'jsonwebtoken';
 
 import { RegisterUserInput } from '../schema/user';
 import { UserService } from '../services/user-service';
 import { Roles } from '../utils/constants';
 import { hashPassword } from '../utils/security';
+import { TokenService } from '../services/token-service';
+
 import Config from '../config';
-import createHttpError from 'http-errors';
-import { StatusCodes } from 'http-status-codes';
-import { AppDataSource } from '../config/data-source';
-import { RefreshToken } from '../entity/refresh-token';
 
 export class AuthController {
   constructor(
     private readonly userService: UserService,
+    private readonly tokenService: TokenService,
     private readonly logger: Logger,
   ) {}
 
@@ -31,15 +28,6 @@ export class AuthController {
     // const privateKey = (req.app.locals.keys as { privateKey: Buffer })
     //   .privateKey;
 
-    let privateKey: Buffer | undefined;
-    try {
-      privateKey = await fs.readFile(path.resolve('certs/private.pem'));
-    } catch (err: unknown) {
-      const error = err as Error;
-
-      throw createHttpError(StatusCodes.INTERNAL_SERVER_ERROR, error.message);
-    }
-
     const user = await this.userService.create({
       firstName,
       lastName,
@@ -52,38 +40,25 @@ export class AuthController {
       sub: String(user.id),
       role: user.role,
     };
+    const newRefreshToken = await this.tokenService.persist(user);
 
-    const MS_IN_YEAR = 1000 * 60 * 60 * 24 * 365;
-
-    const refreshRepo = AppDataSource.getRepository(RefreshToken);
-    const newRefreshToken = await refreshRepo.save({
-      user,
-      expiresAt: new Date(Date.now() + MS_IN_YEAR),
-    });
-
-    const accessToken = jwt.sign(payload, privateKey, {
-      algorithm: 'RS256',
-      expiresIn: '1h',
-      issuer: 'auth-service',
-    });
-    const refreshToken = jwt.sign(payload, Config.REFRESH_TOKEN_SECRET, {
-      algorithm: 'HS256',
-      expiresIn: '1y',
-      issuer: 'auth-service',
-      jwtid: String(newRefreshToken.id),
-    });
+    const accessToken = await this.tokenService.generateAccessToken(payload);
+    const refreshToken = this.tokenService.generateRefreshToken(
+      payload,
+      newRefreshToken.id,
+    );
 
     res.cookie('accessToken', accessToken, {
       domain: 'localhost',
       sameSite: 'strict',
-      maxAge: 1000 * 60 * 60, // 1 hour,
+      maxAge: Config.ACCESS_TOKEN_COOKIE_EXP_IN_MS, // 1 hour,
       httpOnly: true,
     });
 
     res.cookie('refreshToken', refreshToken, {
       domain: 'localhost',
       sameSite: 'strict',
-      maxAge: 1000 * 60 * 60 * 26 * 365, // 365 days,
+      maxAge: Config.REFRESH_TOKEN_COOKIE_EXP_IN_MS, // 365 days,
       httpOnly: true,
     });
 
