@@ -2,9 +2,10 @@ import request from 'supertest';
 import { DataSource } from 'typeorm';
 import { AppDataSource } from '../../../config/data-source';
 import { createUserForTest, getUserData, isJWT } from '../../utils';
-import { User } from '../../../entity/User';
+import { User } from '../../../entity/user';
 import { Roles } from '../../../utils/constants';
 import app from '../../../app';
+import { RefreshToken } from '../../../entity/refresh-token';
 
 describe('POST /auth/register', () => {
   let connection: DataSource;
@@ -134,6 +135,25 @@ describe('POST /auth/register', () => {
 
       expect(isJWT(accessToken)).toBeTruthy();
       expect(isJWT(refreshToken)).toBeTruthy();
+    });
+    it('Should store refresh token in DB', async () => {
+      const userData = getUserData();
+
+      const response = await createUserForTest(userData);
+
+      const refreshTokenRepo = connection.getRepository(RefreshToken);
+      const refreshTokens = await refreshTokenRepo.find();
+
+      expect(refreshTokens.length).toBe(1);
+
+      const tokens = await refreshTokenRepo
+        .createQueryBuilder('refreshToken')
+        .where('refreshToken.userId = :userId', {
+          userId: (response.body as { id: number }).id,
+        })
+        .getMany();
+
+      expect(tokens.length).toBe(1);
     });
   });
   describe('Fields are missing', () => {

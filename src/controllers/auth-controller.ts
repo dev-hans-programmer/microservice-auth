@@ -12,6 +12,8 @@ import { hashPassword } from '../utils/security';
 import Config from '../config';
 import createHttpError from 'http-errors';
 import { StatusCodes } from 'http-status-codes';
+import { AppDataSource } from '../config/data-source';
+import { RefreshToken } from '../entity/refresh-token';
 
 export class AuthController {
   constructor(
@@ -50,6 +52,15 @@ export class AuthController {
       sub: String(user.id),
       role: user.role,
     };
+
+    const MS_IN_YEAR = 1000 * 60 * 60 * 24 * 365;
+
+    const refreshRepo = AppDataSource.getRepository(RefreshToken);
+    const newRefreshToken = await refreshRepo.save({
+      user,
+      expiresAt: new Date(Date.now() + MS_IN_YEAR),
+    });
+
     const accessToken = jwt.sign(payload, privateKey, {
       algorithm: 'RS256',
       expiresIn: '1h',
@@ -59,6 +70,7 @@ export class AuthController {
       algorithm: 'HS256',
       expiresIn: '1y',
       issuer: 'auth-service',
+      jwtid: String(newRefreshToken.id),
     });
 
     res.cookie('accessToken', accessToken, {
