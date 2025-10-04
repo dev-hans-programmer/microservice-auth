@@ -26,7 +26,7 @@ app.use('/auth', authRouter);
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 app.use((req, _res, _next) => {
   throw createHttpError(
-    StatusCodes.BAD_REQUEST,
+    StatusCodes.NOT_FOUND,
     `Can't find route ${req.originalUrl} on the server global`,
   );
 });

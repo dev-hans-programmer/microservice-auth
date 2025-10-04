@@ -1,7 +1,7 @@
 import express from 'express';
 import { AuthController } from '../controllers/auth-controller';
 import { validateRequest } from '../middleware/validate-input';
-import { registerUserSchema } from '../schema/user';
+import { loginSchema, registerUserSchema } from '../schema/user';
 import { AppDataSource } from '../config/data-source';
 import { User } from '../entity/user';
 import { UserService } from '../services/user-service';
@@ -19,5 +19,6 @@ const tokenService = new TokenService(tokenRepo);
 const authController = new AuthController(userService, tokenService, logger);
 
 router.post('/', validateRequest(registerUserSchema), authController.register);
+router.post('/login', validateRequest(loginSchema), authController.login);
 
 export { router as authRouter };

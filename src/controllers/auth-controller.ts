@@ -3,13 +3,15 @@ import { Logger } from 'winston';
 
 import { JwtPayload } from 'jsonwebtoken';
 
-import { RegisterUserInput } from '../schema/user';
+import { LoginUserInput, RegisterUserInput } from '../schema/user';
 import { UserService } from '../services/user-service';
 import { Roles } from '../utils/constants';
-import { hashPassword } from '../utils/security';
+import { comparePassword, hashPassword } from '../utils/security';
 import { TokenService } from '../services/token-service';
 
 import Config from '../config';
+import createHttpError from 'http-errors';
+import { StatusCodes } from 'http-status-codes';
 
 export class AuthController {
   constructor(
@@ -63,5 +65,45 @@ export class AuthController {
     });
 
     res.status(201).json({ message: 'User created', id: user.id });
+  };
+  login = async (req: Request, res: Response) => {
+    //
+    const { email, password } = req.body as LoginUserInput;
+
+    const user = await this.userService.findOne({ email });
+    if (!user) throw createHttpError(StatusCodes.UNAUTHORIZED, 'Unauthorized');
+
+    const isMatch = await comparePassword(password, user.password);
+
+    if (!isMatch)
+      throw createHttpError(StatusCodes.UNAUTHORIZED, 'Unauthorized');
+
+    const payload: JwtPayload = {
+      sub: String(user.id),
+      role: user.role,
+    };
+    const newRefreshToken = await this.tokenService.persist(user);
+
+    const accessToken = await this.tokenService.generateAccessToken(payload);
+    const refreshToken = this.tokenService.generateRefreshToken(
+      payload,
+      newRefreshToken.id,
+    );
+
+    res.cookie('accessToken', accessToken, {
+      domain: 'localhost',
+      sameSite: 'strict',
+      maxAge: Config.ACCESS_TOKEN_COOKIE_EXP_IN_MS, // 1 hour,
+      httpOnly: true,
+    });
+
+    res.cookie('refreshToken', refreshToken, {
+      domain: 'localhost',
+      sameSite: 'strict',
+      maxAge: Config.REFRESH_TOKEN_COOKIE_EXP_IN_MS, // 365 days,
+      httpOnly: true,
+    });
+
+    res.json({ message: 'Login Successful' });
   };
 }

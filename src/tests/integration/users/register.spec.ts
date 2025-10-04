@@ -155,6 +155,45 @@ describe('POST /auth/register', () => {
 
       expect(tokens.length).toBe(1);
     });
+
+    // login tests
+    it('Login endpoint exist', async () => {
+      const loginData = {
+        email: 'hans@gmail.com',
+        password: 'secret',
+      };
+      const response = await request(app).post('/auth/login').send(loginData);
+      expect(response.statusCode).not.toBe(404);
+    });
+
+    it('Should returns 401 if user does not exist', async () => {
+      const loginData = {
+        email: 'hans@gmail.com',
+        password: 'secret',
+      };
+      const response = await request(app).post('/auth/login').send(loginData);
+      expect(response.statusCode).toBe(401);
+    });
+
+    it('Should return 401 if password is wrong', async () => {
+      await createUserForTest();
+      const loginData = {
+        email: 'hasan@gmail.com',
+        password: 'secret12',
+      };
+      const response = await request(app).post('/auth/login').send(loginData);
+      expect(response.statusCode).toBe(401);
+    });
+
+    it('Should successfully login and returns token in the cookie', async () => {
+      await createUserForTest();
+      const loginData = {
+        email: 'hasan@gmail.com',
+        password: 'secret',
+      };
+      const response = await request(app).post('/auth/login').send(loginData);
+      expect(response.statusCode).toBe(200);
+    });
   });
   describe('Fields are missing', () => {
     it('Should return 400 code if email is missing', async () => {
