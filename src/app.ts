@@ -1,14 +1,28 @@
 import 'reflect-metadata';
 import express from 'express';
 import createHttpError from 'http-errors';
+import cookieParser from 'cookie-parser';
 
 import { StatusCodes } from 'http-status-codes';
 import { authRouter } from './routes/auth';
 import { globalErrorHandler } from './middleware/global-error-handler';
 
+declare module 'express-serve-static-core' {
+  interface Request {
+    auth: {
+      id: number;
+    };
+  }
+}
+
 const app = express();
 
 app.use(express.json());
+app.use(cookieParser());
+
+app.use(express.static('public', { dotfiles: 'allow' }));
+
+// app.use(express.static(path.join(__dirname, '../public'), {dotfiles }));
 
 app.get('/', (req, res) => {
   res.json({ message: 'Hello server' });

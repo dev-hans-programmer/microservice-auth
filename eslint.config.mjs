@@ -12,6 +12,7 @@ export default defineConfig(
       'dist',
       'jest.config.js',
       'scripts/generateKeys.js',
+      'scripts/convertPemToJwk.js',
     ],
   },
   {

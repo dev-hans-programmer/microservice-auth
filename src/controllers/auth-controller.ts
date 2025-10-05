@@ -106,4 +106,12 @@ export class AuthController {
 
     res.json({ message: 'Login Successful' });
   };
+
+  getMe = async (req: Request, res: Response) => {
+    const user = await this.userService.findById(req.auth.id);
+
+    if (!user) throw createHttpError(StatusCodes.NOT_FOUND, 'User not found');
+
+    res.json({ id: user.id });
+  };
 }

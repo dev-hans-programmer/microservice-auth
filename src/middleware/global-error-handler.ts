@@ -31,13 +31,20 @@ export const globalErrorHandler = (
     stack: undefined as string | undefined,
   };
 
-  console.log({ errorName: err.name });
+  console.log({ errorName: err.name, err });
 
   // Handle known HttpError instances
   if (err instanceof HttpError) {
     error.statusCode = err.statusCode || StatusCodes.INTERNAL_SERVER_ERROR;
     error.status = err.status.toString().startsWith('4') ? 'fail' : 'error';
     error.message = err.message;
+    error.stack = err.stack;
+  }
+
+  if (err.name === 'UnauthorizedError') {
+    error.statusCode = err.status;
+    error.status = err.status.toString().startsWith('4') ? 'fail' : 'error';
+    error.message = 'Unauthorized';
     error.stack = err.stack;
   }
 

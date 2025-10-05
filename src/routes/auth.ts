@@ -8,6 +8,7 @@ import { UserService } from '../services/user-service';
 import logger from '../config/logger';
 import { TokenService } from '../services/token-service';
 import { RefreshToken } from '../entity/refresh-token';
+import authenticate from '../middleware/authenticate';
 
 const router = express.Router();
 
@@ -20,5 +21,6 @@ const authController = new AuthController(userService, tokenService, logger);
 
 router.post('/', validateRequest(registerUserSchema), authController.register);
 router.post('/login', validateRequest(loginSchema), authController.login);
+router.get('/self', authenticate, authController.getMe);
 
 export { router as authRouter };

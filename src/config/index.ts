@@ -26,6 +26,8 @@ const envSchema = z.object({
   ACCESS_TOKEN_COOKIE_EXP_IN_MS: z.number().default(1000 * 60 * 60),
   REFRESH_TOKEN_COOKIE_EXP_IN_MS: z.number().default(1000 * 60 * 60 * 24 * 365),
 
+  JWKS_URI: z.string(),
+
   USE_SECRET_MANAGER: z
     .enum(['true', 'false'])
     .transform((val) => val === 'true')
