@@ -2,22 +2,20 @@ import {
   Column,
   CreateDateColumn,
   Entity,
-  ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { User } from './user';
 
-@Entity({ name: 'refreshTokens' })
-export class RefreshToken {
+@Entity({ name: 'tenants' })
+export class Tenant {
   @PrimaryGeneratedColumn()
   id!: number;
 
-  @Column({ type: 'timestamp' })
+  @Column('varchar', { length: 30 })
   expiresAt!: Date;
 
-  @ManyToOne(() => User) // Many refresh tokens belong to User
-  user!: User;
+  @Column('varchar', { length: 255 })
+  address!: string;
 
   @UpdateDateColumn()
   updatedAt!: Date;

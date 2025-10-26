@@ -10,7 +10,7 @@ import { TokenService } from '../services/token-service';
 import { RefreshToken } from '../entity/refresh-token';
 import authenticate from '../middleware/authenticate';
 
-const router = express.Router();
+const authRouter = express.Router();
 
 const userRepo = AppDataSource.getRepository(User);
 const tokenRepo = AppDataSource.getRepository(RefreshToken);
@@ -19,8 +19,12 @@ const tokenService = new TokenService(tokenRepo);
 
 const authController = new AuthController(userService, tokenService, logger);
 
-router.post('/', validateRequest(registerUserSchema), authController.register);
-router.post('/login', validateRequest(loginSchema), authController.login);
-router.get('/self', authenticate, authController.getMe);
+authRouter.post(
+  '/',
+  validateRequest(registerUserSchema),
+  authController.register,
+);
+authRouter.post('/login', validateRequest(loginSchema), authController.login);
+authRouter.get('/self', authenticate, authController.getMe);
 
-export { router as authRouter };
+export default authRouter;

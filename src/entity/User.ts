@@ -1,6 +1,13 @@
-import { Column, Entity, PrimaryGeneratedColumn, Unique } from 'typeorm';
+import {
+  Column,
+  Entity,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+  Unique,
+} from 'typeorm';
+import { Tenant } from './tenant';
 
-@Entity()
+@Entity({ name: 'users' })
 @Unique(['email'])
 export class User {
   @PrimaryGeneratedColumn()
@@ -20,4 +27,7 @@ export class User {
 
   @Column()
   role!: string;
+
+  @ManyToOne(() => Tenant)
+  tenant!: Tenant;
 }
