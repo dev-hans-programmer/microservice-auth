@@ -12,7 +12,7 @@ export class Tenant {
   id!: number;
 
   @Column('varchar', { length: 30 })
-  expiresAt!: Date;
+  name!: string;
 
   @Column('varchar', { length: 255 })
   address!: string;

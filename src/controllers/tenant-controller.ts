@@ -1,12 +1,27 @@
+import createHttpError from 'http-errors';
+import { TenantIn } from '../schema/tenant.schema';
+import { TenantService } from '../services/tenant.service';
 import { BaseController, ControllerHandler } from '../utils/response';
+import { StatusCodes } from 'http-status-codes';
 
 export class TenantController extends BaseController {
-  constructor() {
+  constructor(private readonly tenantService: TenantService) {
     super();
   }
 
   create: ControllerHandler = async (req, res) => {
-    await Promise.resolve(20);
-    res.sendStatus(201);
+    const { name } = req.body as TenantIn;
+
+    const existingTenant = await this.tenantService.findOne({ name });
+
+    if (existingTenant)
+      throw createHttpError(
+        StatusCodes.BAD_REQUEST,
+        `Tenant already exists with name ${name}`,
+      );
+
+    const tenant = await this.tenantService.create(req.body as TenantIn);
+
+    this.sendResponse(res, { tenant }, 201);
   };
 }
