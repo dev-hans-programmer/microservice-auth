@@ -1,13 +1,13 @@
 import express from 'express';
-import { AuthController } from '../controllers/auth-controller';
+import { AuthController } from '../controllers/auth.controller';
 import { validateRequest } from '../middleware/validate-input';
-import { loginSchema, registerUserSchema } from '../schema/user';
+import { loginSchema, registerUserSchema } from '../schema/user.schema';
 import { AppDataSource } from '../config/data-source';
-import { User } from '../entity/user';
-import { UserService } from '../services/user-service';
+import { User } from '../entity/user.entity';
+import { UserService } from '../services/user.service';
 import logger from '../config/logger';
-import { TokenService } from '../services/token-service';
-import { RefreshToken } from '../entity/refresh-token';
+import { TokenService } from '../services/token.service';
+import { RefreshToken } from '../entity/refreshToken.entity';
 import authenticate from '../middleware/authenticate';
 
 const authRouter = express.Router();

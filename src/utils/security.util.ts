@@ -1,5 +1,5 @@
 import bcrypt from 'bcrypt';
-import { saltRound } from './constants';
+import { saltRound } from './constants.util';
 
 export const comparePassword = async (
   password: string,

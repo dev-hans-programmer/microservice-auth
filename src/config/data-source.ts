@@ -1,8 +1,8 @@
 import { DataSource } from 'typeorm';
 import Config from '.';
-import { User } from '../entity/user';
-import { RefreshToken } from '../entity/refresh-token';
-import { Tenant } from '../entity/tenant';
+import { User } from '../entity/user.entity';
+import { RefreshToken } from '../entity/refreshToken.entity';
+import { Tenant } from '../entity/tenant.entity';
 
 export const AppDataSource = new DataSource({
   type: 'postgres',

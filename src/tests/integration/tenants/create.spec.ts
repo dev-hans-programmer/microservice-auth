@@ -2,7 +2,7 @@ import request from 'supertest';
 import { DataSource } from 'typeorm';
 import { AppDataSource } from '../../../config/data-source';
 import app from '../../../app';
-import { Tenant } from '../../../entity/tenant';
+import { Tenant } from '../../../entity/tenant.entity';
 
 describe('POST /tenants', () => {
   let connection: DataSource;

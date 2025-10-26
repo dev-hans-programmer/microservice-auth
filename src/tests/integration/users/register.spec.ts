@@ -2,10 +2,10 @@ import request from 'supertest';
 import { DataSource } from 'typeorm';
 import { AppDataSource } from '../../../config/data-source';
 import { createUserForTest, getUserData, isJWT } from '../../utils';
-import { User } from '../../../entity/user';
-import { Roles } from '../../../utils/constants';
+import { User } from '../../../entity/user.entity';
+import { Roles } from '../../../utils/constants.util';
 import app from '../../../app';
-import { RefreshToken } from '../../../entity/refresh-token';
+import { RefreshToken } from '../../../entity/refreshToken.entity';
 
 describe('POST /auth/register', () => {
   let connection: DataSource;

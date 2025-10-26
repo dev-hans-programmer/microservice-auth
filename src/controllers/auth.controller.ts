@@ -3,11 +3,11 @@ import { Logger } from 'winston';
 
 import { JwtPayload } from 'jsonwebtoken';
 
-import { LoginUserInput, RegisterUserInput } from '../schema/user';
-import { UserService } from '../services/user-service';
-import { Roles } from '../utils/constants';
-import { comparePassword, hashPassword } from '../utils/security';
-import { TokenService } from '../services/token-service';
+import { LoginUserInput, RegisterUserInput } from '../schema/user.schema';
+import { UserService } from '../services/user.service';
+import { Roles } from '../utils/constants.util';
+import { comparePassword, hashPassword } from '../utils/security.util';
+import { TokenService } from '../services/token.service';
 
 import Config from '../config';
 import createHttpError from 'http-errors';

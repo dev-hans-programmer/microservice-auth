@@ -5,7 +5,7 @@ import {
   PrimaryGeneratedColumn,
   Unique,
 } from 'typeorm';
-import { Tenant } from './tenant';
+import { Tenant } from './tenant.entity';
 
 @Entity({ name: 'users' })
 @Unique(['email'])

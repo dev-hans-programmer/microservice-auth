@@ -6,8 +6,8 @@ import { StatusCodes } from 'http-status-codes';
 import { JwtPayload, sign } from 'jsonwebtoken';
 import Config from '../config';
 import { Repository } from 'typeorm';
-import { RefreshToken } from '../entity/refresh-token';
-import { User } from '../entity/user';
+import { RefreshToken } from '../entity/refreshToken.entity';
+import { User } from '../entity/user.entity';
 
 export class TokenService {
   constructor(private readonly tokenRepository: Repository<RefreshToken>) {}
