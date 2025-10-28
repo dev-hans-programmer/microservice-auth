@@ -1,4 +1,4 @@
-import { Request, Response } from 'express';
+import { NextFunction, Request, Response } from 'express';
 
 export abstract class BaseController {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -7,4 +7,8 @@ export abstract class BaseController {
   }
 }
 
-export type ControllerHandler = (req: Request, res: Response) => Promise<void>;
+export type ControllerHandler = (
+  req: Request,
+  res: Response,
+  next?: NextFunction,
+) => Promise<void>;

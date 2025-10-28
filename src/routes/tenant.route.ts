@@ -5,6 +5,9 @@ import { Tenant } from '../entity/tenant.entity';
 import { TenantService } from '../services/tenant.service';
 import { validateRequest } from '../middleware/validate-input';
 import { tenantInSchema } from '../schema/tenant.schema';
+import authenticate from '../middleware/authenticate';
+import authrorize from '../middleware/authorize';
+import { Roles } from '../utils/constants.util';
 
 const tenantRouter = express.Router();
 
@@ -16,6 +19,11 @@ const tenantController = new TenantController(tenantService);
 
 tenantRouter
   .route('/')
-  .post(validateRequest(tenantInSchema), tenantController.create);
+  .post(
+    authenticate,
+    authrorize(Roles.ADMIN),
+    validateRequest(tenantInSchema),
+    tenantController.create,
+  );
 
 export default tenantRouter;
