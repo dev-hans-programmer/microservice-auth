@@ -31,7 +31,7 @@ export const globalErrorHandler = (
     stack: undefined as string | undefined,
   };
 
-  console.log({ errorName: err.name, err });
+  // console.log({ errorName: err.name, err });
 
   // Handle known HttpError instances
   if (err instanceof HttpError) {

@@ -34,6 +34,12 @@ export const userInSchema = z.object({
     error: (issue) =>
       issue.input === undefined ? 'Role is required' : 'Invalid value for role',
   }),
+  tenantId: z.number({
+    error: (issue) =>
+      issue.input === undefined
+        ? 'TenantId is required'
+        : 'Invalid value for tenantId',
+  }),
 });
 
 export type UserIn = z.infer<typeof userInSchema>;

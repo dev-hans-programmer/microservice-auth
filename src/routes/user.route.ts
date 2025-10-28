@@ -9,12 +9,16 @@ import { UserController } from '../controllers/user.controller';
 import { UserService } from '../services/user.service';
 import { AppDataSource } from '../config/data-source';
 import { User } from '../entity/user.entity';
+import { TenantService } from '../services/tenant.service';
+import { Tenant } from '../entity/tenant.entity';
 
 const userRouter = express.Router();
 
 const userRepository = AppDataSource.getRepository(User);
+const tenantRepository = AppDataSource.getRepository(Tenant);
 const userService = new UserService(userRepository);
-const userController = new UserController(userService);
+const tenantService = new TenantService(tenantRepository);
+const userController = new UserController(userService, tenantService);
 
 userRouter.post(
   '/',
