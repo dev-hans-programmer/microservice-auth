@@ -1,8 +1,9 @@
 import app from './app';
 import Config from './config';
-import { AppDataSource } from './config/data-source';
 import logger from './config/logger';
 import loadSecrets from './config/secrets';
+
+import { AppDataSource } from './config/data-source';
 
 const startServer = async () => {
   try {

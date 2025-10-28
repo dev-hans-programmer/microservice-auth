@@ -11,4 +11,4 @@ export type ControllerHandler = (
   req: Request,
   res: Response,
   next?: NextFunction,
-) => Promise<void>;
+) => Promise<void> | void;

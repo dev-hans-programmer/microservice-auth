@@ -1,4 +1,5 @@
 import createHttpError from 'http-errors';
+
 import { TenantIn } from '../schema/tenant.schema';
 import { TenantService } from '../services/tenant.service';
 import { BaseController, ControllerHandler } from '../utils/response.util';

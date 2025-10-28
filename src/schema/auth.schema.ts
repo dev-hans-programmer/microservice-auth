@@ -1,7 +1,6 @@
 import { z } from 'zod';
-import { Roles } from '../utils/constants.util';
 
-export const userInSchema = z.object({
+export const registerUserSchema = z.object({
   firstName: z
     .string({
       error: (issue) =>
@@ -30,10 +29,23 @@ export const userInSchema = z.object({
         issue.input === undefined ? 'Password is required' : 'Not a string',
     })
     .min(6, 'Password should be of minimum 6 characters'),
-  role: z.enum(Object.values(Roles), {
-    error: (issue) =>
-      issue.input === undefined ? 'Role is required' : 'Invalid value for role',
-  }),
 });
 
-export type UserIn = z.infer<typeof userInSchema>;
+export const loginSchema = z.object({
+  email: z.preprocess(
+    (val) => (typeof val === 'string' ? val.trim() : val),
+    z.email({
+      error: (issue) =>
+        issue.input === undefined ? 'Email is required' : 'Not an email',
+    }),
+  ),
+  password: z
+    .string({
+      error: (issue) =>
+        issue.input === undefined ? 'Password is required' : 'Not a string',
+    })
+    .min(6, 'Password should be of minimum 6 characters'),
+});
+
+export type RegisterUserInput = z.infer<typeof registerUserSchema>;
+export type LoginUserInput = z.infer<typeof loginSchema>;

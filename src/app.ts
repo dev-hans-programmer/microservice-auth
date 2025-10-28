@@ -3,10 +3,12 @@ import express from 'express';
 import createHttpError from 'http-errors';
 import cookieParser from 'cookie-parser';
 
-import { StatusCodes } from 'http-status-codes';
-import { globalErrorHandler } from './middleware/global-error-handler';
 import tenantRouter from './routes/tenant.route';
 import authRouter from './routes/auth.route';
+import userRouter from './routes/user.route';
+
+import { StatusCodes } from 'http-status-codes';
+import { globalErrorHandler } from './middleware/global-error-handler';
 
 declare module 'express-serve-static-core' {
   interface Request {
@@ -39,6 +41,7 @@ app.get('/error-route', () => {
 
 app.use('/auth', authRouter);
 app.use('/tenants', tenantRouter);
+app.use('/users', userRouter);
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 app.use((req, _res, _next) => {
