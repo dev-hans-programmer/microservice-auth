@@ -5,8 +5,10 @@
   "main": "index.js",
   "scripts": {
     "dev": "cross-env NODE_ENV=dev nodemon src/server.ts",
-    "test": "jest --watch --runInBand",
-    "build:prod": "rm -rf dist dist && tsc && cp .env.prod dist/.env.prod",
+    "test": "jest --no-cache --coverage --all --runInBand",
+    "test:watch": "jest --watch --runInBand",
+    "build": "tsc",
+    "build:prod": "rm -rf dist && tsc && cp .env.prod dist/.env.prod",
     "format:check": "prettier . --check",
     "format:fix": "prettier . --write",
     "lint:check": "eslint . ",
