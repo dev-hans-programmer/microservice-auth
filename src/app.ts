@@ -2,6 +2,7 @@ import 'reflect-metadata';
 import express from 'express';
 import createHttpError from 'http-errors';
 import cookieParser from 'cookie-parser';
+import cors from 'cors';
 
 import tenantRouter from './routes/tenant.route';
 import authRouter from './routes/auth.route';
@@ -9,6 +10,7 @@ import userRouter from './routes/user.route';
 
 import { StatusCodes } from 'http-status-codes';
 import { globalErrorHandler } from './middleware/global-error-handler';
+import Config from './config';
 
 declare module 'express-serve-static-core' {
   interface Request {
@@ -23,6 +25,12 @@ const app = express();
 
 app.use(express.json());
 app.use(cookieParser());
+app.use(
+  cors({
+    origin: [Config.FRONTEND_ORIGIN],
+    credentials: true,
+  }),
+);
 
 app.use(express.static('public', { dotfiles: 'allow' }));
 

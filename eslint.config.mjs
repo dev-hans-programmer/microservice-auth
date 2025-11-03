@@ -13,6 +13,7 @@ export default defineConfig(
       'jest.config.js',
       'scripts/generateKeys.js',
       'scripts/convertPemToJwk.js',
+      'coverage',
     ],
   },
   {
