@@ -45,10 +45,10 @@ export class AuthController {
     const newRefreshToken = await this.tokenService.persist(user);
 
     const accessToken = await this.tokenService.generateAccessToken(payload);
-    const refreshToken = this.tokenService.generateRefreshToken(
-      payload,
-      newRefreshToken.id,
-    );
+    const refreshToken = this.tokenService.generateRefreshToken({
+      ...payload,
+      id: String(newRefreshToken.id),
+    });
 
     res.cookie('accessToken', accessToken, {
       domain: 'localhost',
@@ -85,10 +85,10 @@ export class AuthController {
     const newRefreshToken = await this.tokenService.persist(user);
 
     const accessToken = await this.tokenService.generateAccessToken(payload);
-    const refreshToken = this.tokenService.generateRefreshToken(
-      payload,
-      newRefreshToken.id,
-    );
+    const refreshToken = this.tokenService.generateRefreshToken({
+      ...payload,
+      id: String(newRefreshToken.id),
+    });
 
     res.cookie('accessToken', accessToken, {
       domain: 'localhost',
@@ -112,5 +112,11 @@ export class AuthController {
     if (!user) throw createHttpError(StatusCodes.NOT_FOUND, 'User not found');
 
     res.json({ ...user, password: undefined });
+  };
+  logout = async (req: Request, res: Response) => {
+    await this.tokenService.deleteRefreshToken(Number(req.auth.id));
+    res.clearCookie('accessToken');
+    res.clearCookie('refreshToken');
+    res.json({});
   };
 }

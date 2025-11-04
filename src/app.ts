@@ -17,6 +17,7 @@ declare module 'express-serve-static-core' {
     auth: {
       sub: string;
       role: string;
+      id: number | string;
     };
   }
 }

@@ -28,12 +28,12 @@ export class TokenService {
       throw createHttpError(StatusCodes.INTERNAL_SERVER_ERROR, error.message);
     }
   };
-  generateRefreshToken = (payload: JwtPayload, tokenId: number) => {
+  generateRefreshToken = (payload: JwtPayload) => {
     const refreshToken = sign(payload, Config.REFRESH_TOKEN_SECRET, {
       algorithm: 'HS256',
       expiresIn: '1y',
       issuer: 'auth-service',
-      jwtid: String(tokenId),
+      jwtid: String(payload.id),
     });
     return refreshToken;
   };
@@ -51,4 +51,6 @@ export class TokenService {
 
     return await this.tokenRepository.save(tokenEntity);
   };
+  deleteRefreshToken = async (tokenId: number) =>
+    await this.tokenRepository.delete({ id: tokenId });
 }
