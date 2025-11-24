@@ -41,7 +41,9 @@ export class AuthController {
     const payload: JwtPayload = {
       sub: String(user.id),
       role: user.role,
+      tenant: user.tenant ? user.tenant : '',
     };
+
     const newRefreshToken = await this.tokenService.persist(user);
 
     const accessToken = await this.tokenService.generateAccessToken(payload);
@@ -70,7 +72,7 @@ export class AuthController {
     //
     const { email, password } = req.body as LoginUserInput;
 
-    const user = await this.userService.findOne({ email });
+    const user = await this.userService.findOne({ email }, 'tenant');
     if (!user) throw createHttpError(StatusCodes.UNAUTHORIZED, 'Unauthorized');
 
     const isMatch = await comparePassword(password, user.password);
@@ -81,6 +83,7 @@ export class AuthController {
     const payload: JwtPayload = {
       sub: String(user.id),
       role: user.role,
+      tenant: user.tenant ? user.tenant.id : '',
     };
     const newRefreshToken = await this.tokenService.persist(user);
 

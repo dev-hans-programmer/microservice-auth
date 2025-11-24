@@ -3,6 +3,7 @@ import {
   DeepPartial,
   ObjectLiteral,
   FindOptionsWhere,
+  FindOneOptions,
 } from 'typeorm';
 
 export interface BaseEntityWithId extends ObjectLiteral {
@@ -21,12 +22,18 @@ export class BaseRepository<TEntity extends BaseEntityWithId> {
     await this.repository.findOne({
       where: { id } as FindOptionsWhere<TEntity>,
     });
+
   public findOne = async (
     where: FindOptionsWhere<TEntity>,
-  ): Promise<TEntity | null> =>
-    await this.repository.findOne({
-      where,
-    });
+    relation?: string,
+  ): Promise<TEntity | null> => {
+    const options: FindOneOptions<TEntity> = { where };
+
+    if (relation) {
+      options.relations = [relation];
+    }
+    return await this.repository.findOne(options);
+  };
 
   public findAll = async (): Promise<TEntity[]> => await this.repository.find();
 
